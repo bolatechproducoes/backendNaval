@@ -17,13 +17,14 @@ externalDocs:
 servers:
 - url: http://localhost:3001
   description: Api de Desenvolvimento
+
 paths:
   /tokens:
     post:
       summary: Gera o token de login
-      description: "Através desse endpoint podem ser adicionadas novas especialidades"
+      description: "Através desse endpoint é gerado o token de login"
       tags:
-      - "login token"
+      - "TOKEN - Login"
       requestBody:
         description: "Aqui você envia os dados de login"
         content:
@@ -53,38 +54,48 @@ paths:
                       email:
                         type: string
         401:
-          description: "Não autorizado"
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /users:
+    get:
+      security:
+      - auth: []
+      summary: Consulta todos os usuários
+      tags:
+      - "TABLE: users"
+      responses:
+        200:
+          description: Sucesso
           content:
             aplication/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      example: "Usuário inválido"
-    get:
-      summary: Cria nova especialidade
-      description: "Através desse endpoint podem ser adicionadas novas especialidades"
+                $ref: "#/components/schemas/UserResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Adiciona novo usuário
+      tags:
+      - "TABLE: users"
+      description: "Endpoint para adicionar usuário"
       requestBody:
-        description: "Aqui você envia os dados das especialidade"
+        description: "Body da requisição para adicionar novo usuário"
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                descricao:
-                  type: string
+              $ref: "#/components/schemas/UserBodyRequest"
       responses:
         201:
           description: "Sucesso"
           content:
             aplication/json:
               schema:
-                $ref: "#/components/schemas/Especialidade"
-      security:
-      - auth: []
-  /especialidades/{id}:
+                $ref: "#/components/schemas/UserResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /users/{id}:
     parameters:
       - name: id
         in: path
@@ -92,81 +103,1086 @@ paths:
           type: integer
         required: true
     get:
-      summary: Consulta uma especialidade pelo ID
+      summary: Consulta um usuário
+      security:
+      - auth: []
+      tags:
+      - "TABLE: users"
       responses:
         200:
           description: Sucesso
           content:
             aplication/json:
               schema:
-                $ref: "#/components/schemas/Especialidade"
+                $ref: "#/components/schemas/UserResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
         404:
-          $ref: "#/components/responses/ErroResponse"
+          $ref: "#/components/responses/ErrorResponse"
     put:
-      summary: Atualiza uma especialidade
-      description: "Através desse endpoint pode ser atualizada uma especialidade"
+      summary: Atualiza um usuário
+      security:
+      - auth: []
+      description: "Através desse endpoint pode ser atualizado um usuário"
+      tags:
+      - "TABLE: users"
       requestBody:
-        description: "Aqui você envia os dados das especialidade"
+        description: "Body da requisição de atualizar usuário"
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                descricao:
-                  type: string
+              $ref: "#/components/schemas/UserBodyRequest"
       responses:
         201:
           description: "Sucesso"
           content:
             aplication/json:
               schema:
-                $ref: "#/components/schemas/Especialidade"
+                $ref: "#/components/schemas/UserResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
         404:
-          $ref: "#/components/responses/ErroResponse"
+          $ref: "#/components/responses/ErrorResponse"
     delete:
-      summary: Apaga uma especialidade
-      description: "Através desse endpoint você apaga uma especialidade"
+      summary: Apaga um usuário
+      tags:
+      - "TABLE: users"
+      security:
+      - auth: []
+      description: "Através desse endpoint você apaga um usuário"
       responses:
         201:
           description: "Sucesso"
           content:
             aplication/json:
               example: "Registro apagado"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
         404:
-          $ref: "#/components/responses/ErroResponse"
+          $ref: "#/components/responses/ErrorResponse"
+  /boat:
+    get:
+      security:
+      - auth: []
+      summary: Consulta todos as embarcações
+      tags:
+      - "TABLE: boats"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/BoatResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Adiciona uma nova embarcação
+      security:
+      - auth: []
+      tags:
+      - "TABLE: boats"
+      description: "Endpoint para adicionar embarcação"
+      requestBody:
+        description: "Body da requisição para adicionar nova embarcação"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BoatRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/BoatResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /boat/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Consulta uma embarcação
+      security:
+      - auth: []
+      tags:
+      - "TABLE: boats"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/BoatResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: Atualiza uma embarcação
+      security:
+      - auth: []
+      description: "Através desse endpoint pode ser atualizada uma embarcação"
+      tags:
+      - "TABLE: boats"
+      requestBody:
+        description: "Body da requisição de atualizar embarcação"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BoatRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/BoatResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      summary: Apaga uma embarcação
+      tags:
+      - "TABLE: boats"
+      security:
+      - auth: []
+      description: "Através desse endpoint você apaga uma embarcação"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              example: "Registro apagado"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /club:
+    get:
+      security:
+      - auth: []
+      summary: Consulta todos os clubes, marinas e piers
+      tags:
+      - "TABLE: clubs"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ClubResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Adiciona um novo clube, marina ou pier
+      security:
+      - auth: []
+      tags:
+      - "TABLE: clubs"
+      description: "Endpoint para adicionar clube, marina ou pier"
+      requestBody:
+        description: "Body da requisição para adicionar nova clube, marina ou pier"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClubRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ClubResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /club/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Consulta um clube, marina ou pier
+      security:
+      - auth: []
+      tags:
+      - "TABLE: clubs"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ClubResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: Atualiza um clube, marina ou pier
+      security:
+      - auth: []
+      description: "Através desse endpoint pode ser atualizada um clube, marina ou pier"
+      tags:
+      - "TABLE: clubs"
+      requestBody:
+        description: "Body da requisição de atualizar clube, marina ou pier"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ClubRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ClubResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      summary: Apaga um clube, marina ou pier
+      tags:
+      - "TABLE: clubs"
+      security:
+      - auth: []
+      description: "Através desse endpoint você apaga um clube, marina ou pier"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              example: "Registro apagado"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /model:
+    get:
+      security:
+      - auth: []
+      summary: Consulta todos os modelos de barcos
+      tags:
+      - "TABLE: models_tb"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ModelResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Adiciona um novo modelo de barco
+      security:
+      - auth: []
+      tags:
+      - "TABLE: models_tb"
+      description: "Endpoint para adicionar modelo de barco"
+      requestBody:
+        description: "Body da requisição para adicionar novo modelo de barco"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModelRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ModelResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /model/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Consulta um modelo de barco
+      security:
+      - auth: []
+      tags:
+      - "TABLE: models_tb"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ModelResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: Atualiza um modelo de barco
+      security:
+      - auth: []
+      description: "Através desse endpoint pode ser atualizado um modelo de barco"
+      tags:
+      - "TABLE: models_tb"
+      requestBody:
+        description: "Body da requisição de atualizar modelo de barco"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModelRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ModelResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      summary: Apaga um modelo de barco
+      tags:
+      - "TABLE: models_tb"
+      security:
+      - auth: []
+      description: "Através desse endpoint você apaga um modelo de barco"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              example: "Registro apagado"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /owner:
+    get:
+      security:
+      - auth: []
+      summary: Consulta todos os prorietários de barcos
+      tags:
+      - "TABLE: owners"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/OwnerResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Adiciona um novo proprietário de barco
+      security:
+      - auth: []
+      tags:
+      - "TABLE: owners"
+      description: "Endpoint para adicionar proprietário de barco"
+      requestBody:
+        description: "Body da requisição para adicionar novo proprietário de barco"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OwnerRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/OwnerResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /owner/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Consulta um proprietário de barco
+      security:
+      - auth: []
+      tags:
+      - "TABLE: owners"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/OwnerResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: Atualiza um proprietário de barco
+      security:
+      - auth: []
+      description: "Através desse endpoint pode ser atualizado um proprietário de barco"
+      tags:
+      - "TABLE: owners"
+      requestBody:
+        description: "Body da requisição de atualizar proprietário de barco"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OwnerRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/OwnerResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      summary: Apaga um proprietário de barco
+      tags:
+      - "TABLE: owners"
+      security:
+      - auth: []
+      description: "Através desse endpoint você apaga um proprietário de barco"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              example: "Registro apagado"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /sailor:
+    get:
+      security:
+      - auth: []
+      summary: Consulta todos os marinheiros
+      tags:
+      - "TABLE: sailors"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/SailorResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Adiciona um novo marinheiro
+      security:
+      - auth: []
+      tags:
+      - "TABLE: sailors"
+      description: "Endpoint para adicionar marinheiro"
+      requestBody:
+        description: "Body da requisição para adicionar novo marinheiro"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SailorRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/SailorResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /sailor/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Consulta um marinheiro
+      security:
+      - auth: []
+      tags:
+      - "TABLE: sailors"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/SailorResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: Atualiza um marinheiro
+      security:
+      - auth: []
+      description: "Através desse endpoint pode ser atualizado um marinheiro"
+      tags:
+      - "TABLE: sailors"
+      requestBody:
+        description: "Body da requisição de atualizar marinheiro"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SailorRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/SailorResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      summary: Apaga um marinheiro
+      tags:
+      - "TABLE: sailors"
+      security:
+      - auth: []
+      description: "Através desse endpoint você apaga um marinheiro"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              example: "Registro apagado"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /shipyard:
+    get:
+      security:
+      - auth: []
+      summary: Consulta todos os estaleiros
+      tags:
+      - "TABLE: shipyards"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ShipyardResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    post:
+      summary: Adiciona um novo estaleiro
+      security:
+      - auth: []
+      tags:
+      - "TABLE: shipyards"
+      description: "Endpoint para adicionar estaleiro"
+      requestBody:
+        description: "Body da requisição para adicionar novo estaleiro"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShipyardRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ShipyardResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /shipyard/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Consulta um estaleiro
+      security:
+      - auth: []
+      tags:
+      - "TABLE: shipyards"
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ShipyardResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: Atualiza um estaleiro
+      security:
+      - auth: []
+      description: "Através desse endpoint pode ser atualizado um estaleiro"
+      tags:
+      - "TABLE: shipyards"
+      requestBody:
+        description: "Body da requisição de atualizar estaleiro"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShipyardRequest"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/ShipyardResponse"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      summary: Apaga um estaleiro
+      tags:
+      - "TABLE: shipyards"
+      security:
+      - auth: []
+      description: "Através desse endpoint você apaga um estaleiro"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              example: "Registro apagado"
+        400:
+          $ref: "#/components/responses/BadRequestResponse"
+        401:
+          $ref: "#/components/responses/UnauthorizedResponse"
+        404:
+          $ref: "#/components/responses/ErrorResponse"
+  /fotos:
+    post:
+      summary: Registro de arquivo enviado
+      security:
+      - auth: []
+      tags:
+      - "TABLE: fotos"
+      requestBody:
+        description: "Arquivo de imagem"
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        201:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                  id:
+                    type: number
+                  originalname:
+                    type: string
+                  filename:
+                    type: string
+                  boat_id:
+                    type: string
+                  updated_at:
+                    type: string
+                  created_at:
+                    type: string
 components:
   schemas:
-    Especialidade:
+    UserBodyRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+    UserResponse:
       type: object
       properties:
         id:
-          type: integer
-        descricao:
+          type: number
+        nome:
           type: string
-    Token:
+        email:
+          type: string
+        owners:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+    BoatRequest:
       type: object
-    Number:
-      type: number
-      format: float
+      properties:
+        nome:
+          type: string
+        sailor_id:
+          type: string
+        model_id:
+          type: string
+    BoatResponse:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        sailor_id:
+          type: number
+        model_id:
+          type: number
+        Fotos:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              filename:
+                type: string
+        Owners:
+          type: array
+          items:
+            type: object
+            properties:
+              nome:
+                type: string
+              id:
+                type: number
+    ClubRequest:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        coordenada:
+          type: string
+        regiao:
+          type: string
+        estado:
+          type: string
+        cidade:
+          type: string
+        telefone:
+          type: number
+        calado_max:
+          type: number
+        homepage:
+          type: string
+        email:
+          type: string
+        endereco:
+          type: string
+    ClubResponse:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        coordenada:
+          type: string
+        regiao:
+          type: string
+        estado:
+          type: string
+        cidade:
+          type: string
+        telefone:
+          type: number
+        calado_max:
+          type: number
+        homepage:
+          type: string
+        email:
+          type: string
+        endereco:
+          type: string
+        Owners:
+          type: array
+          items:
+            type: object
+            properties:
+              nome:
+                type: string
+    ModelRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        shipyard_id:
+          type: number
+    ModelResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          nome:
+            type: string
+          shipyard_id:
+            type: number
+          boats:
+            type: array
+            items:
+              type: object
+              properties:
+                nome:
+                  type: string
+    OwnerRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        sobrenome:
+          type: string
+        telefone:
+          type: number
+        email:
+          type: string
+        user_id:
+          type: number
+        boat_id:
+          type: number
+        club_id:
+          type: number
+    OwnerResponse:
+      type: object
+      properties:
+        id:
+          type: number
+        nome:
+          type: string
+        sobrenome:
+          type: string
+        telefone:
+          type: number
+        email:
+          type: string
+        user_id:
+          type: number
+        boat_id:
+          type: number
+        club_id:
+          type: number
+    SailorRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        telefone:
+          type: number
+        email:
+          type: string
+    SailorResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          nome:
+            type: string
+          telefone:
+            type: number
+          email:
+            type: string
+          Boats:
+            type: array
+            items:
+             type: object
+             properties:
+              id:
+                type: number
+              nome:
+                type: string
+    ShipyardRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        regiao:
+          type: string
+        estado:
+          type: string
+        cidade:
+          type: string
+        telefone:
+          type: number
+        tipo:
+          type: string
+        homepage:
+          type: string
+        email:
+          type: string
+        endereco:
+          type: string
+    ShipyardResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          nome:
+            type: string
+          regiao:
+            type: string
+          estado:
+            type: string
+          cidade:
+            type: string
+          telefone:
+            type: number
+          tipo:
+            type: string
+          homepage:
+            type: string
+          email:
+            type: string
+          endereco:
+            type: string
+          modeltbs:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: number
+                nome:
+                  type: string
   securitySchemes:
     auth:
       type: http
       scheme: bearer
       bearerFormat: JWT
   responses:
-    ErroResponse:
+    UnauthorizedResponse:
+      description: "Não autorizado"
+      content:
+        aplication/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  example: "Usuário não autorizado, não encontrado ou inválido"
+    ErrorResponse:
       description: Página não encontrada
       content:
         aplication/json:
-          example: "Not Found"
-    SuccessResponse:
-      description: Sucesso
+          example: "Page Not Found"
+    BadRequestResponse:
+      description: Id correspondente não encontrado na tabela
       content:
-        application/json:
+        aplication/json:
           schema:
-            type: array
-            items:
-              $ref: "#/components/schemas/Especialidade"
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  example: "Id não encontrado"
+
 
 
 

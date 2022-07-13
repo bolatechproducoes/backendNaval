@@ -42,6 +42,8 @@ const whiteList = [
   'http://192.168.0.14',
   'http://192.168.0.19',
   'http://localhost:3000',
+  'http://0.0.0.0',
+  'http://192.168.0.17',
 ];
 
 // Cria a constante corsOption que executa a verificação da URL que fez a solicitação a API

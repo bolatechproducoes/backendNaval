@@ -1,0 +1,173 @@
+openapi: 3.0.1
+info:
+  title: API do Nautilus
+  description: API para controle de embarcações, Marinas, clubes e Estaleiros da aplicação de treino em JavaScript - Nautilus
+  version: 0.0.1
+  termsOfService: https://github.com/bolatechproducoes/nautilus#este-projeto-esta-pronto
+  contact:
+    name: Developer
+    email: bobcodex@gmail.com
+    url: https://bobcodex.com.br
+  license:
+    name: License - MIT
+    url: https://github.com/bolatechproducoes/nautilus/blob/main/LICENSE
+externalDocs:
+  description: Documentação do Nautilus no GitHub
+  url: https://github.com/bolatechproducoes/nautilus#nautilus
+servers:
+- url: http://localhost:3001
+  description: Api de Desenvolvimento
+paths:
+  /tokens:
+    post:
+      summary: Gera o token de login
+      description: "Através desse endpoint podem ser adicionadas novas especialidades"
+      tags:
+      - "login token"
+      requestBody:
+        description: "Aqui você envia os dados de login"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      password:
+                        type: string
+                      email:
+                        type: string
+        401:
+          description: "Não autorizado"
+          content:
+            aplication/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      example: "Usuário inválido"
+    get:
+      summary: Cria nova especialidade
+      description: "Através desse endpoint podem ser adicionadas novas especialidades"
+      requestBody:
+        description: "Aqui você envia os dados das especialidade"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                descricao:
+                  type: string
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Especialidade"
+      security:
+      - auth: []
+  /especialidades/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+    get:
+      summary: Consulta uma especialidade pelo ID
+      responses:
+        200:
+          description: Sucesso
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Especialidade"
+        404:
+          $ref: "#/components/responses/ErroResponse"
+    put:
+      summary: Atualiza uma especialidade
+      description: "Através desse endpoint pode ser atualizada uma especialidade"
+      requestBody:
+        description: "Aqui você envia os dados das especialidade"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                descricao:
+                  type: string
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              schema:
+                $ref: "#/components/schemas/Especialidade"
+        404:
+          $ref: "#/components/responses/ErroResponse"
+    delete:
+      summary: Apaga uma especialidade
+      description: "Através desse endpoint você apaga uma especialidade"
+      responses:
+        201:
+          description: "Sucesso"
+          content:
+            aplication/json:
+              example: "Registro apagado"
+        404:
+          $ref: "#/components/responses/ErroResponse"
+components:
+  schemas:
+    Especialidade:
+      type: object
+      properties:
+        id:
+          type: integer
+        descricao:
+          type: string
+    Token:
+      type: object
+    Number:
+      type: number
+      format: float
+  securitySchemes:
+    auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    ErroResponse:
+      description: Página não encontrada
+      content:
+        aplication/json:
+          example: "Not Found"
+    SuccessResponse:
+      description: Sucesso
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/Especialidade"
+
+
+
+
